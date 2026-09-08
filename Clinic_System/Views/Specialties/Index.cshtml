@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Clinic_System.Models.Specialty>
+
+@{
+    ViewData["Title"] = "Specialties Management";
+}
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-primary">Specialties</h2>
+            <p class="text-muted">Manage all medical specialties in the clinic system.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary rounded-pill px-4">
+            <i class="bi bi-plus-lg me-1"></i> Add New Specialty
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center py-4 rounded-3 shadow-sm" role="alert">
+            <i class="bi bi-info-circle display-6 text-primary d-block mb-2"></i>
+            <h5>No Specialties Found</h5>
+            <p class="mb-0 text-muted">Click the button above to add the first specialty.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col">
+
+                    <div class="card h-100 border-0 shadow-sm rounded-4 hover-top transition">
+
+                        <div class="card-body p-4 d-flex flex-column">
+
+                            <div class="d-flex align-items-center mb-3">
+
+                                <div class="bg-primary-subtle text-primary rounded-circle p-3 me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <i class="@(string.IsNullOrEmpty(item.IconPath) ? "bi bi-heart-pulse-fill fs-4" : item.IconPath + " fs-4")"></i>
+                                </div>
+
+                                <h5 class="card-title fw-bold mb-0 text-dark">@item.Name</h5>
+
+                            </div>
+
+                            <p class="card-text text-muted flex-grow-1">
+                                @(string.IsNullOrEmpty(item.Description) ? "No description provided." : item.Description)
+                            </p>
+
+                            <hr class="text-black-50 my-3">
+
+                            <div class="d-flex justify-content-end gap-2">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info rounded-circle" title="Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning rounded-circle" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger rounded-circle" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+        </div>
+    }
+</div>
