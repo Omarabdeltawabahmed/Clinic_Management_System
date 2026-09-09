@@ -25,9 +25,9 @@ A comprehensive, web-based management solution designed to streamline daily heal
 ## Getting Started
 
 ### Prerequisites
-- [.NET 8 Core SDK](https://dotnet.microsoft.com/download)
+- [.NET 10 Core SDK](https://dotnet.microsoft.com/download)
 - [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) & SSMS
-- Visual Studio 2022 / VS Code
+- Visual Studio 2026 / VS Code
 
 ### Installation
 
