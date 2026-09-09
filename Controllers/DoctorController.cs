@@ -90,5 +90,27 @@ namespace ClinicManagementSystem.Controllers
 
             return View(record);
         }
+
+        // 5. عرض السجل الطبي السابق للمريض
+        public async Task<IActionResult> PatientHistory(int appointmentId)
+        {
+            var currentAppointment = await _context.Appointments.FindAsync(appointmentId);
+
+            if (currentAppointment == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.PatientName = currentAppointment.PatientName;
+            ViewBag.AppointmentId = appointmentId;
+
+            var medicalHistory = await _context.MedicalRecords
+                .Include(m => m.Appointment)
+                .Where(m => m.Appointment.PatientName == currentAppointment.PatientName)
+                .OrderByDescending(m => m.CreatedAt)
+                .ToListAsync();
+
+            return View(medicalHistory);
+        }
     }
 }
