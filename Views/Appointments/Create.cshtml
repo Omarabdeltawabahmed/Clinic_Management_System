@@ -1,0 +1,57 @@
+@model Appointment
+@{
+    ViewData["Title"] = "Book Appointment";
+    var doctor = (Doctor)ViewBag.Doctor;
+}
+
+<section class="section">
+    <div class="container narrow">
+        <div class="form-card">
+
+            <div class="booking-doctor">
+                <img src="@doctor.ImageUrl" alt="@doctor.Name" />
+                <div>
+                    <span class="eyebrow">Booking with</span>
+                    <h1>@doctor.Name</h1>
+                    <p>@doctor.Specialty.Name · @doctor.ConsultationFee.ToString("0") EGP</p>
+                </div>
+            </div>
+
+           
+            <form asp-controller="Appointments"
+                  asp-action="Create"
+                  method="post"
+                  >
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="DoctorId" value="@doctor.Id" />
+
+                <div asp-validation-summary="ModelOnly" class="validation"></div>
+
+                <label>Date</label>
+                <input asp-for="AppointmentDate" type="date" class="form-control" />
+                <span asp-validation-for="AppointmentDate" class="validation"></span>
+
+                <label>Time</label>
+                <select asp-for="AppointmentTime" class="form-control">
+                    <option value="">-- Select Time --</option>
+                    <option value="09:00 AM">09:00 AM</option>
+                    <option value="10:00 AM">10:00 AM</option>
+                    <option value="11:30 AM">11:30 AM</option>
+                    <option value="01:00 PM">01:00 PM</option>
+                    <option value="04:30 PM">04:30 PM</option>
+                    <option value="06:00 PM">06:00 PM</option>
+                </select>
+                <span asp-validation-for="AppointmentTime" class="validation"></span>
+
+                <label>Notes (optional)</label>
+                <textarea asp-for="Notes" class="form-control" rows="4" placeholder="Anything the doctor should know before the visit?"></textarea>
+                <button type="submit" class="btn btn-primary btn-lg full">
+                    <i class="fa-regular fa-calendar-check"></i>
+                    Confirm Appointment
+                </button>
+            </form>
+
+        </div>
+    </div>
+</section>
