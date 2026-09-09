@@ -40,5 +40,55 @@ namespace ClinicManagementSystem.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
+        // 3. فتح صفحة كتابة الروشتة
+        public async Task<IActionResult> CreateRecord(int appointmentId)
+        {
+            var appointment = await _context.Appointments.FindAsync(appointmentId);
+            if (appointment == null) return NotFound();
+
+            var record = new MedicalRecord { AppointmentId = appointmentId };
+            ViewBag.PatientName = appointment.PatientName;
+            return View(record);
+        }
+
+        // 4. حفظ الروشتة ورفع الملف في قاعدة البيانات
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateRecord(MedicalRecord record, IFormFile? attachment)
+        {
+            if (ModelState.IsValid)
+            {
+                // حفظ ملف الـ PDF/الصور لو الطبيب رفعه
+                if (attachment != null && attachment.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "medical_records");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(attachment.FileName);
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await attachment.CopyToAsync(fileStream);
+                    }
+
+                    record.AttachmentPath = "/uploads/medical_records/" + uniqueFileName;
+                }
+
+                // حفظ السجل الطبي وتغيير حالة الكشف لـ Done
+                _context.MedicalRecords.Add(record);
+                var appointment = await _context.Appointments.FindAsync(record.AppointmentId);
+                if (appointment != null)
+                {
+                    appointment.Status = AppointmentStatus.Done;
+                }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(record);
+        }
     }
 }
