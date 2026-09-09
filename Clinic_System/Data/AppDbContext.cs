@@ -14,7 +14,7 @@ namespace Clinic_System.Data
         public DbSet<Specialty> Specialties { get; set; }
         public DbSet<DoctorSchedule> DoctorSchedules { get; set; }
         public DbSet<DoctorLeave> DoctorLeaves { get; set; }
-
+        public DbSet<WorkingHour> workingHours { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

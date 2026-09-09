@@ -100,8 +100,13 @@
                         </li>
 
                         <li>
+                            <a asp-controller="WorkingHours" asp-action="Index" class="@(currentController == "WorkingHours" ? "active" : "")">WorkingHours</a>
+                        </li>
+
+                        <li>
                             <a asp-controller="Appointments" asp-action="Index" class="@(currentController == "Appointments" ? "active" : "")">Appointments</a>
                         </li>
+
                     </ul>
                     <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
                 </nav>
