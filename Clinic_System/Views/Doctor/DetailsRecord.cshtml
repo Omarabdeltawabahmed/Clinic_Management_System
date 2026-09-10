@@ -1,0 +1,45 @@
+﻿@model Clinic_System.Models.MedicalRecord
+
+@{
+    ViewData["Title"] = "Medical Record Details";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold text-primary mb-0">📋 Medical Record Details</h3>
+        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+            ⬅ Back to Queue
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-body p-4">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h6 class="text-muted fw-bold">Patient Name</h6>
+                    <p class="fs-5 fw-semibold">@(Model.Appointment?.Patient?.Name ?? Model.Appointment?.PatientName ?? "N/A")</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <h6 class="text-muted fw-bold">Record Date</h6>
+                    <p class="fs-6 text-secondary">@Model.Appointment?.AppointmentDate.ToString("dd MMMM yyyy - hh:mm tt")</p>
+                </div>
+            </div>
+
+            <hr class="my-3" />
+
+            <div class="mb-4">
+                <h6 class="text-muted fw-bold mb-2">Diagnosis</h6>
+                <div class="p-3 bg-light rounded-3">
+                    <p class="mb-0 text-dark">@Model.Diagnosis</p>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <h6 class="text-muted fw-bold mb-2">Prescription / Treatment</h6>
+                <div class="p-3 bg-light rounded-3">
+                    <p class="mb-0 text-dark">@Model.Prescription</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

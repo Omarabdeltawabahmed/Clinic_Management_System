@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Clinic_System.Models
@@ -29,6 +30,18 @@ namespace Clinic_System.Models
 
         [Display(Name = "Profile Picture")]
         public string? ProfilePictureUrl { get; set; }
+
+
+        [Required(ErrorMessage = "Consultation fee is required.")]
+        [Column(TypeName = "decimal(18,2)")]
+        [Range(0, 100000, ErrorMessage = "Fee must be a positive number.")]
+        [Display(Name = "Consultation Fee")]
+        public decimal Fee { get; set; } = 50.00m;
+
+        public string? UserId { get; set; }
+
+        [ForeignKey("UserId")]
+        public IdentityUser? User { get; set; }
 
 
         [Required(ErrorMessage = "Please select a specialty.")]

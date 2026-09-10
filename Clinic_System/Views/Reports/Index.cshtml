@@ -1,0 +1,113 @@
+﻿@model Clinic_System.ViewModels.ReportsViewModel
+
+@{
+    ViewData["Title"] = "Reports & Analytics";
+}
+
+<div class="container-fluid py-4">
+    <div class="mb-4">
+        <h2 class="fw-bold text-primary mb-1">Reports & Analytics Dashboard</h2>
+        <p class="text-muted mb-0">Overview of clinic performance, occupancy, and revenues.</p>
+    </div>
+
+    <!-- KPI Summary Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col">
+            <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-primary border-4">
+                <span class="text-muted fw-semibold small">Total Appointments</span>
+                <h3 class="fw-bold text-dark mb-0 mt-1">@Model.TotalAppointments</h3>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-success border-4">
+                <span class="text-muted fw-semibold small">Completed Visits</span>
+                <h3 class="fw-bold text-success mb-0 mt-1">@Model.CompletedAppointments</h3>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-warning border-4">
+                <span class="text-muted fw-semibold small">Waiting / Active</span>
+                <h3 class="fw-bold text-warning mb-0 mt-1">@Model.WaitingAppointments</h3>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-danger border-4">
+                <span class="text-muted fw-semibold small">Cancelled / No-Show</span>
+                <h3 class="fw-bold text-danger mb-0 mt-1">@Model.CancelledAppointments</h3>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-info border-4">
+                <span class="text-muted fw-semibold small">Total Revenue</span>
+                <h3 class="fw-bold text-dark mb-0 mt-1">$@Model.TotalRevenue.ToString("N2")</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row g-4">
+        <!-- Revenue per Specialty (Bar Chart) -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-bar-chart-fill me-2 text-primary"></i>Revenue per Specialty</h5>
+                <canvas id="specialtyChart" height="220"></canvas>
+            </div>
+        </div>
+
+        <!-- Appointments Breakdown (Doughnut Chart) -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-pie-chart-fill me-2 text-primary"></i>Occupancy Status Breakdown</h5>
+                <canvas id="statusChart" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Data passing from C# to JavaScript
+    const specialtyLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SpecialtyNames));
+    const specialtyData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SpecialtyRevenues));
+
+    const totalCompleted = @Model.CompletedAppointments;
+    const totalCancelled = @Model.CancelledAppointments;
+    const totalWaiting = @Model.WaitingAppointments;
+
+    // 1. Bar Chart: Revenue per Specialty
+    const ctx1 = document.getElementById('specialtyChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: specialtyLabels,
+            datasets: [{
+                label: 'Revenue ($)',
+                data: specialtyData,
+                backgroundColor: '#0d6efd',
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // 2. Doughnut Chart: Status Breakdown
+    const ctx2 = document.getElementById('statusChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: ['Completed', 'Cancelled', 'Waiting/In Progress'],
+            datasets: [{
+                data: [totalCompleted, totalCancelled, totalWaiting],
+                backgroundColor: ['#198754', '#dc3545', '#ffc107']
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+</script>

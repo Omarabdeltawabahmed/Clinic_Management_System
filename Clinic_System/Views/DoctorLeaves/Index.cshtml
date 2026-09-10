@@ -1,0 +1,87 @@
+﻿@model IEnumerable<Clinic_System.Models.DoctorLeave>
+
+@{
+    ViewData["Title"] = "Doctor Leaves";
+    var doctors = ViewBag.Doctors as Dictionary<int, string> ?? new Dictionary<int, string>();
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary mb-0">Doctor Leaves Management</h2>
+    </div>
+
+    <!-- Form Add Leave -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-4">
+            <h5 class="fw-bold mb-3">Add New Leave</h5>
+            <form asp-action="Create" method="post" class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Doctor</label>
+                    <select name="DoctorId" class="form-select rounded-3" required>
+                        <option value="">-- Select Doctor --</option>
+                        @foreach (var doc in doctors)
+                        {
+                            <option value="@doc.Key">Dr. @doc.Value</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Leave Date & Time</label>
+                    <input type="datetime-local" name="LeaveDate" class="form-control rounded-3" required />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Reason</label>
+                    <input type="text" name="Reason" class="form-control rounded-3" placeholder="Optional" />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100 rounded-3">Save Leave</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Doctor Name</th>
+                        <th>Leave Date</th>
+                        <th>Leave Time</th>
+                        <th>Reason</th>
+                        <th class="text-end pe-4">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">No leaves recorded yet.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-bold">
+                                    Dr. @(doctors.ContainsKey(item.DoctorId) ? doctors[item.DoctorId] : "Unknown")
+                                </td>
+                                <td>@item.LeaveDate.ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture)</td>
+                                <td><span class="badge bg-light text-dark border"><i class="bi bi-clock me-1"></i>@item.LeaveDate.ToString("hh:mm tt", System.Globalization.CultureInfo.InvariantCulture)</span></td>
+                                <td>@(string.IsNullOrEmpty(item.Reason) ? "-" : item.Reason)</td>
+                                <td class="text-end pe-4">
+                                    <form asp-action="Delete" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3" onclick="return confirm('Delete this leave?')">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

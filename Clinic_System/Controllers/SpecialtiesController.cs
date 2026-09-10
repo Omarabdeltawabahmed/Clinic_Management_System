@@ -1,10 +1,12 @@
 ﻿using Clinic_System.Data;
 using Clinic_System.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Clinic_System.Controllers
 {
+    [Authorize(Roles = "Admin")] 
     public class SpecialtiesController : Controller
     {
 
@@ -14,6 +16,7 @@ namespace Clinic_System.Controllers
             _db = db;
         }
 
+        [AllowAnonymous] 
         public async Task<IActionResult> Index()
         {
             var specialists = await _db.Specialties.ToListAsync();

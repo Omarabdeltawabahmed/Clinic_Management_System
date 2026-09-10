@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<div class="d-flex align-items-center gap-2">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        // استخراج الجزء الأول من الإيميل قبل علامة @
+        var rawName = User.Identity?.Name ?? "";
+        var displayName = rawName.Contains("@") ? rawName.Split('@')[0] : rawName;
+
+        <span class="text-light small me-2 d-flex align-items-center fw-semibold">
+            @if (User.IsInRole("Doctor"))
+            {
+                <i class="bi bi-person-badge me-1 fs-6 text-warning"></i>
+                <span>Hello Dr. @displayName</span>
+            }
+            else if (User.IsInRole("Admin"))
+            {
+                <i class="bi bi-shield-lock me-1 fs-6 text-info"></i>
+                <span>Hello Admin (@displayName)</span>
+            }
+            else
+            {
+                <i class="bi bi-person-circle me-1 fs-6"></i>
+                <span>Hello @displayName</span>
+            }
+        </span>
+
+        <form class="form-inline d-inline" asp-controller="Account" asp-action="Logout" method="post">
+            <button type="submit" class="btn btn-danger btn-sm py-1 px-3 rounded-pill fw-semibold">Logout</button>
+        </form>
+    }
+    else
+    {
+        <a class="btn btn-outline-light btn-sm py-1 px-3 rounded-pill fw-semibold" asp-controller="Account" asp-action="Login">Login</a>
+        <a class="btn btn-primary btn-sm py-1 px-3 rounded-pill fw-semibold ms-1" asp-controller="Account" asp-action="Register">Register</a>
+    }
+</div>
