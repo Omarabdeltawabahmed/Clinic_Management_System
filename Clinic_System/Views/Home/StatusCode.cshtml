@@ -1,0 +1,3 @@
+@model int
+@{ ViewData["Title"] = Model == 404 ? "Page Not Found" : "Request Error"; }
+<section class="section"><div class="container"><div class="empty-state error-state"><i class="fa-solid fa-compass"></i><h1>@(Model == 404 ? "Page not found" : "We couldn't complete that request")</h1><p>@(Model == 404 ? "The page you are looking for may have moved or no longer exists." : "Please check the request and try again.")</p><a asp-controller="Home" asp-action="Index" class="btn btn-primary">Back to Home</a></div></div></section>

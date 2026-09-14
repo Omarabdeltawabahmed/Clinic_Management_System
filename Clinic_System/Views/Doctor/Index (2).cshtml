@@ -1,0 +1,16 @@
+@model DoctorCatalogViewModel
+@{ ViewData["Title"] = "Doctors"; }
+<section class="page-hero"><div class="container"><h1>Our Doctors</h1><p>Meet our trusted specialists and find the right appointment for you.</p></div></section>
+<section class="section"><div class="container">
+<form method="get" class="filter-panel"><div class="filter-grid">
+<div><label>Search</label><input name="search" value="@Model.Search" class="form-control" placeholder="Doctor or specialty" /></div>
+<div><label>Specialty</label><select name="specialtyId" class="form-control"><option value="">All specialties</option>@foreach(var s in Model.Specialties){<option value="@s.Id" selected="@(Model.SpecialtyId == s.Id ? "selected" : null)">@s.Name</option>}</select></div>
+<div><label>Available day</label><select name="day" class="form-control"><option value="">Any day</option>@foreach(var d in Model.AvailableDays){<option selected="@(Model.Day == d ? "selected" : null)">@d</option>}</select></div>
+<div><label>Maximum fee</label><input name="maxFee" value="@Model.MaxFee" type="number" min="0" class="form-control" placeholder="EGP" /></div>
+<div><label>Sort by</label><select name="sort" class="form-control"><option value="rating" selected="@(Model.Sort == "rating" ? "selected" : null)">Top rated</option><option value="fee-low" selected="@(Model.Sort == "fee-low" ? "selected" : null)">Fee: low to high</option><option value="fee-high" selected="@(Model.Sort == "fee-high" ? "selected" : null)">Fee: high to low</option><option value="experience" selected="@(Model.Sort == "experience" ? "selected" : null)">Experience</option><option value="name" selected="@(Model.Sort == "name" ? "selected" : null)">Name</option></select></div>
+<div class="filter-action"><label>&nbsp;</label><button class="btn btn-primary full" type="submit"><i class="fa-solid fa-filter"></i> Apply filters</button></div>
+</div></form>
+@if(!Model.Doctors.Any()){<div class="empty-state"><i class="fa-solid fa-user-doctor"></i><h2>No doctors found</h2><p>Try changing your search or filters.</p></div>}
+<div class="doctor-grid catalog-grid">@foreach(var doctor in Model.Doctors){<article class="doctor-card"><img src="@(string.IsNullOrWhiteSpace(doctor.ImageUrl)?"/images/clinic-hero.jpg":doctor.ImageUrl)" onerror="this.src='/images/clinic-hero.jpg'" alt="@doctor.Name" class="doctor-photo"/><h3>@doctor.Name</h3><p class="muted">Consultant, @doctor.Specialty.Name</p><div class="rating"><span>★★★★★</span> @doctor.Rating.ToString("0.0") <small>(@doctor.ReviewsCount)</small></div><div class="doctor-meta"><span><i class="fa-regular fa-clock"></i> @doctor.YearsExperience yrs</span><span><i class="fa-solid fa-coins"></i> @doctor.ConsultationFee.ToString("0") EGP</span></div><div class="card-actions"><a asp-action="Details" asp-route-id="@doctor.Id" class="btn btn-outline btn-sm">Profile</a><a asp-controller="Appointments" asp-action="Create" asp-route-doctorId="@doctor.Id" class="btn btn-primary btn-sm">Book now</a></div></article>}</div>
+@if(Model.TotalPages>1){<div class="pagination">@for(int p=1;p<=Model.TotalPages;p++){<a class="@(p==Model.Page?"active":"")" asp-route-page="@p" asp-route-search="@Model.Search" asp-route-specialtyId="@Model.SpecialtyId" asp-route-day="@Model.Day" asp-route-maxFee="@Model.MaxFee" asp-route-sort="@Model.Sort">@p</a>}</div>}
+</div></section>

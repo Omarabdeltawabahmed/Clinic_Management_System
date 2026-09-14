@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MediCare Clinic</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+<header class="topbar">
+    <div class="container nav-wrap">
+        <a asp-controller="Home" asp-action="Index" class="brand">
+            <span class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></span>
+            <span><strong>MediCare</strong><small>Clinic</small></span>
+        </a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
+        <nav class="main-nav">
+            <a asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-controller="Doctors" asp-action="Index">Doctors</a>
+            <a href="/#about">About Us</a>
+            <a href="/#contact">Contact Us</a>
+        </nav>
+        <div class="auth-actions">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-controller="AI" asp-action="Index" class="btn btn-soft"><i class="fa-solid fa-wand-magic-sparkles"></i> Assistant</a><a asp-controller="Appointments" asp-action="MyAppointments" class="btn btn-outline">My Appointments</a><a asp-controller="Account" asp-action="ChangePassword" class="btn btn-outline">Password</a>
+                @if (User.IsInRole("Admin")) { <a asp-controller="Admin" asp-action="Index" class="btn btn-soft">Admin</a> }
+                <form asp-controller="Account" asp-action="Logout" method="post"><button class="btn btn-primary">Log out</button></form>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Register" class="btn btn-outline">Create Account</a>
+                <a asp-controller="Account" asp-action="Login" class="btn btn-primary">Log in</a>
+            }
+        </div>
+    </div>
+</header>
+<main>
+    @if (TempData["Success"] is string success) { <div class="toast-success">@success</div> }
+    @RenderBody()
+</main>
+<footer id="contact" class="site-footer">
+    <div class="container footer-grid">
+        <div><a asp-controller="Home" asp-action="Index" class="brand brand-light"><span class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></span><span><strong>MediCare</strong><small>Clinic</small></span></a><p>Integrated healthcare services with a trusted team of specialists and a smooth booking experience.</p></div>
+        <div><h4>Quick Links</h4><a asp-controller="Home" asp-action="Index">Home</a><a asp-controller="Doctors" asp-action="Index">Doctors</a><a href="/#about">Privacy & Care</a></div>
+        <div><h4>Contact Us</h4><p><i class="fa-solid fa-location-dot"></i> Abdel Aziz Fahmy St., Heliopolis</p><p><i class="fa-solid fa-phone"></i> 0123 456 7890</p><p><i class="fa-solid fa-envelope"></i> info@medicare-clinic.com</p></div>
+    </div>
+    <div class="container footer-bottom"><span>© 2026 MediCare Clinic. All Rights Reserved.</span><span class="socials"><i class="fa-brands fa-facebook-f"></i><i class="fa-brands fa-x-twitter"></i><i class="fa-brands fa-instagram"></i><i class="fa-brands fa-linkedin-in"></i></span></div>
+</footer>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,43 @@
+@model HomeIndexViewModel
+@{ ViewData["Title"] = "Home"; }
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-copy">
+            <h1>Integrated healthcare.<br />Right within your reach.</h1>
+            <p>Book with trusted doctors across multiple specialties, simply and without waiting.</p>
+            <a asp-controller="Doctors" asp-action="Index" class="btn hero-btn">
+                Book your appointment now <i class="fa-regular fa-calendar"></i>
+            </a>
+        </div>
+    </div>
+</section>
+<section class="section specialties-section">
+    <div class="container"><div class="section-title"><h2>Available Specialties</h2><span></span></div>
+        <div class="specialty-grid">
+        @foreach (var s in Model.Specialties)
+        {
+            var count = s.Doctors.Count(d => d.IsActive);
+            <a asp-controller="Doctors" asp-action="Index" asp-route-specialtyId="@s.Id" class="specialty-card">
+                <div class="specialty-icon"><i class="@s.IconClass"></i></div><h3>@s.Name</h3><p>@count doctors available</p><span class="arrow-link"><i class="fa-solid fa-arrow-right"></i></span>
+            </a>
+        }
+        </div>
+    </div>
+</section>
+<section class="section doctors-section">
+    <div class="container"><div class="section-title"><h2>Meet Our Featured Doctors</h2><span></span></div>
+        <div class="doctor-grid">
+        @foreach (var doctor in Model.FeaturedDoctors)
+        {
+            <article class="doctor-card"><img src="@doctor.ImageUrl" alt="@doctor.Name" class="doctor-photo"/><h3>@doctor.Name</h3><p class="muted">Consultant, @doctor.Specialty.Name</p><div class="rating"><span>★★★★★</span> @doctor.Rating.ToString("0.0")</div><div class="fee">@doctor.ConsultationFee.ToString("0") EGP</div><div class="card-actions"><a asp-controller="Doctors" asp-action="Details" asp-route-id="@doctor.Id" class="btn btn-outline btn-sm">Profile</a><a asp-controller="Appointments" asp-action="Create" asp-route-doctorId="@doctor.Id" class="btn btn-primary btn-sm">Book now</a></div></article>
+        }
+        </div>
+    </div>
+</section>
+<section id="about" class="section why-section">
+    <div class="container"><div class="section-title"><h2>Why Choose Us?</h2><span></span></div><div class="why-grid">
+        <div class="why-item"><div class="why-icon"><i class="fa-regular fa-clock"></i></div><h3>Instant Online Booking</h3><p>Reserve your appointment in seconds without phone calls or complicated steps.</p></div>
+        <div class="why-item"><div class="why-icon"><i class="fa-regular fa-credit-card"></i></div><h3>Transparent Pricing</h3><p>No hidden fees. Pay the clearly listed consultation fee for your selected doctor.</p></div>
+        <div class="why-item"><div class="why-icon"><i class="fa-solid fa-shield-halved"></i></div><h3>Secure Medical Record</h3><p>Your visits, prescriptions and medical information stay organized and protected.</p></div>
+    </div></div>
+</section>

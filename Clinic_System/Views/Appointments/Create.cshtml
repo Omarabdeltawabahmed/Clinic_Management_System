@@ -1,0 +1,254 @@
+@model BookingViewModel
+
+@{
+    ViewData["Title"] = "Book Appointment";
+}
+
+<section class="section">
+    <div class="container narrow">
+        <div class="form-card booking-card">
+
+            <div class="booking-doctor">
+                <img src="@Model.Doctor?.ImageUrl"
+                     onerror="this.src='/images/clinic-hero.jpg'"
+                     alt="@Model.Doctor?.Name" />
+
+                <div>
+                    <span class="eyebrow">Booking with</span>
+
+                    <h1>@Model.Doctor?.Name</h1>
+
+                    <p>
+                        @Model.Doctor?.Specialty?.Name ·
+                        @Model.Doctor?.ConsultationFee.ToString("0") EGP
+                    </p>
+                </div>
+            </div>
+
+            <form asp-action="Create"
+                  method="post"
+                  id="bookingForm">
+
+                <input asp-for="DoctorId"
+                       type="hidden" />
+
+                <div asp-validation-summary="ModelOnly"
+                     class="validation">
+                </div>
+
+
+                <!-- Available Days -->
+
+                <label asp-for="AppointmentDate">
+                    Choose date
+                </label>
+
+                <select asp-for="AppointmentDate"
+                        class="form-control"
+                        id="appointmentDate">
+
+                    @if (!Model.AvailableDates.Any())
+                    {
+                        <option value="">
+                            No available days
+                        </option>
+                    }
+                    else
+                    {
+                        foreach (var availableDate in Model.AvailableDates)
+                        {
+                            <option value="@availableDate.Date.ToString("yyyy-MM-dd")"
+                                    selected="@(availableDate.Date.Date == Model.AppointmentDate.Date)">
+                                @availableDate.DisplayName
+                            </option>
+                        }
+                    }
+
+                </select>
+
+                <span asp-validation-for="AppointmentDate"
+                      class="validation">
+                </span>
+
+
+                <!-- Available Time -->
+
+                <label asp-for="AppointmentTime">
+                    Choose time
+                </label>
+
+                <select asp-for="AppointmentTime"
+                        class="form-control"
+                        id="appointmentTime">
+
+                    @if (!Model.Slots.Any())
+                    {
+                        <option value="">
+                            No available times
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="">
+                            Choose a time
+                        </option>
+
+                        foreach (var slot in Model.Slots)
+                        {
+                            if (slot.IsBooked)
+                            {
+                                <option value=""
+                                        disabled>
+                                    @slot.Time - Booked
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@slot.Time">
+                                    @slot.Time
+                                </option>
+                            }
+                        }
+                    }
+
+                </select>
+
+                <span asp-validation-for="AppointmentTime"
+                      class="validation">
+                </span>
+
+
+                <!-- Notes -->
+
+                <label asp-for="Notes">
+                    Notes (optional)
+                </label>
+
+                <textarea asp-for="Notes"
+                          class="form-control"
+                          rows="4"
+                          placeholder="Anything the doctor should know before the visit?">
+                </textarea>
+
+
+                <!-- Confirm -->
+
+                <button type="submit"
+                        class="btn btn-primary btn-lg full"
+                        id="confirmBooking">
+
+                    <i class="fa-regular fa-calendar-check"></i>
+
+                    Confirm Appointment
+
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+</section>
+
+
+@section Scripts
+{
+    <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const date =
+                document.getElementById('appointmentDate');
+
+            const time =
+                document.getElementById('appointmentTime');
+
+            const doctor =
+                '@Model.DoctorId';
+
+
+            async function loadSlots() {
+
+                // Clear the selected time
+                time.innerHTML =
+                    '<option value="">Loading available times...</option>';
+
+                time.value = '';
+
+
+                const response =
+                    await fetch(
+                        '@Url.Action("Slots", "Appointments")' +
+                        '?doctorId=' +
+                        doctor +
+                        '&date=' +
+                        encodeURIComponent(date.value)
+                    );
+
+
+                if (!response.ok) {
+
+                    time.innerHTML =
+                        '<option value="">Could not load times</option>';
+
+                    return;
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (!data.length) {
+
+                    time.innerHTML =
+                        '<option value="">No available times</option>';
+
+                    return;
+                }
+
+
+                // Default option
+                time.innerHTML =
+                    '<option value="">Choose a time</option>';
+
+
+                // Add available and booked slots
+                data.forEach(x => {
+
+                    const option =
+                        document.createElement('option');
+
+                    if (x.isBooked) {
+
+                        option.textContent =
+                            x.time + ' - Booked';
+
+                        option.disabled = true;
+
+                    }
+                    else {
+
+                        option.value =
+                            x.time;
+
+                        option.textContent =
+                            x.time;
+                    }
+
+                    time.appendChild(option);
+
+                });
+
+            }
+
+
+            // When the patient changes the date
+            date.addEventListener(
+                'change',
+                loadSlots
+            );
+
+        });
+
+    </script>
+}

@@ -317,3 +317,6 @@ D:\Codes of VS code\C# codes\Clinic_System\Clinic_System\obj\Debug\net10.0\compr
 D:\Codes of VS code\C# codes\Clinic_System\Clinic_System\obj\Debug\net10.0\compressed\ejo98na61g-{0}-cekyg9rg6z-cekyg9rg6z.gz
 D:\Codes of VS code\C# codes\Clinic_System\Clinic_System\obj\Debug\net10.0\compressed\286k347sz4-{0}-qrhbjpyx3x-qrhbjpyx3x.gz
 D:\Codes of VS code\C# codes\Clinic_System\Clinic_System\bin\Debug\net10.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\Bahgat\source\repos\Clinic_Management_System\Clinic_System\obj\Debug\net10.0\Clinic_System.dll
+C:\Users\Bahgat\source\repos\Clinic_Management_System\Clinic_System\obj\Debug\net10.0\refint\Clinic_System.dll
+C:\Users\Bahgat\source\repos\Clinic_Management_System\Clinic_System\obj\Debug\net10.0\Clinic_System.pdb
